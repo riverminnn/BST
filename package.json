@@ -1,7 +1,7 @@
 {
-  "name": "ticket-management-system",
+  "name": "best-service-trucking",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,17 +10,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
+    "@fontsource/inter": "^5.2.8",
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
-    "@fortawesome/react-fontawesome": "^3.1.0",
-    "@tailwindcss/vite": "^4.1.14",
+    "@fortawesome/react-fontawesome": "^3.1.1",
+    "@tailwindcss/vite": "^4.1.17",
     "axios": "^1.12.2",
     "date-fns": "^4.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.65.0",
-    "react-router-dom": "^7.9.4",
-    "tailwindcss": "^4.1.14"
+    "react-router-dom": "^7.10.1",
+    "tailwindcss": "^4.1.17"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
