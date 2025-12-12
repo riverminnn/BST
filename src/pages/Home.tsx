@@ -12,7 +12,7 @@ import {
   faWarehouse,
   faRoute
 } from '@fortawesome/free-solid-svg-icons';
-import QuickContactForm from '../components/QuickContactForm';
+import DriverApplicationForm from '../components/DriverApplicationForm';
 
 export default function Home() {
   return (
@@ -46,9 +46,9 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right side - Quick Contact Form */}
+            {/* Right side - Driver Application Form */}
             <div className="animate-fade-in">
-              <QuickContactForm />
+              <DriverApplicationForm />
             </div>
           </div>
         </div>
