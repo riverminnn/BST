@@ -72,17 +72,58 @@ export default function FullApplication() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
+  const formatSSN = (value: string) => {
+    // Remove all non-digits
+    const digits = value.replace(/\D/g, '');
+    
+    // Format as XXX-XX-XXXX
+    if (digits.length <= 3) {
+      return digits;
+    } else if (digits.length <= 5) {
+      return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+    } else {
+      return `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5, 9)}`;
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
     
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value
-    });
+    // Auto-format SSN as user types
+    if (name === 'ssn') {
+      const formattedSSN = formatSSN(value);
+      setFormData({
+        ...formData,
+        [name]: formattedSSN
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: type === 'checkbox' ? checked : value
+      });
+    }
   };
 
-  const handleNext = () => {
+  const handleNext = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    
+    // Validate Step 1 required fields
+    if (!formData.firstName || !formData.lastName || !formData.ssn || 
+        !formData.dateOfBirth || !formData.streetAddress1 || !formData.city || 
+        !formData.state || !formData.zipCode || !formData.primaryPhone || 
+        !formData.drivingExperience) {
+      alert('Please fill out all required fields before proceeding.');
+      return;
+    }
+
+    // Validate SSN format (XXX-XX-XXXX)
+    const ssnPattern = /^\d{3}-\d{2}-\d{4}$/;
+    if (!ssnPattern.test(formData.ssn)) {
+      alert('Please enter a valid SSN in format XXX-XX-XXXX');
+      return;
+    }
+
     setCurrentStep(2);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -218,7 +259,12 @@ Veteran Status: ${formData.veteranStatus || 'Not specified'}
             </div>
           )}
 
-          <form onSubmit={currentStep === totalSteps ? handleSubmit : undefined}>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            if (currentStep === totalSteps) {
+              handleSubmit(e);
+            }
+          }}>
             {/* Step 1: Personal Information */}
             {currentStep === 1 && (
               <div className="space-y-6">
@@ -293,6 +339,8 @@ Veteran Status: ${formData.veteranStatus || 'Not specified'}
                       onChange={handleChange}
                       placeholder="XXX-XX-XXXX"
                       required
+                      maxLength={11}
+                      pattern="\d{3}-\d{2}-\d{4}"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                     />
                   </div>

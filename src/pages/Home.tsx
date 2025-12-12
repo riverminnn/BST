@@ -12,7 +12,7 @@ import {
   faWarehouse,
   faRoute
 } from '@fortawesome/free-solid-svg-icons';
-import DriverApplicationForm from '../components/DriverApplicationForm';
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   return (
@@ -21,34 +21,27 @@ export default function Home() {
       <section className="relative bg-linear-to-r from-blue-900 via-blue-800 to-blue-900 text-white py-20 px-4">
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="relative max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left side - Hero Text */}
-            <div className="text-center lg:text-left animate-fade-in">
-              <div className="mb-6">
-                <FontAwesomeIcon icon={faTruck} className="text-6xl text-yellow-400 mb-4" />
-              </div>
-              <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                Best Service Trucking LLC
-              </h1>
-              <p className="text-2xl md:text-3xl font-semibold mb-4 text-yellow-400">
-                Safety. Reliability.
-              </p>
-              <p className="text-xl md:text-2xl mb-8">
-                Moving cargo with care and efficiency — from the Port of Savannah and anywhere in Georgia to the Southeast and beyond.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <a 
-                  href="#services" 
-                  className="bg-transparent border-2 border-white hover:bg-white hover:text-blue-900 text-white font-bold py-4 px-8 rounded-lg text-lg transition-all duration-300"
-                >
-                  Our Services
-                </a>
-              </div>
+          <div className="flex flex-col items-center justify-center text-center animate-fade-in">
+            <div className="mb-6">
+              <FontAwesomeIcon icon={faTruck} className="text-6xl text-yellow-400 mb-4" />
             </div>
-
-            {/* Right side - Driver Application Form */}
-            <div className="animate-fade-in">
-              <DriverApplicationForm />
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              Best Service Trucking LLC
+            </h1>
+            <p className="text-2xl md:text-3xl font-semibold mb-4 text-yellow-400">
+              Safety. Reliability.
+            </p>
+            <p className="text-xl md:text-2xl mb-8 max-w-4xl">
+              Moving cargo with care and efficiency — from the Port of Savannah and anywhere in Georgia to the Southeast and beyond.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link 
+                to="/apply" 
+                className="bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold py-4 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-110 shadow-2xl animate-pulse hover:animate-none"
+              >
+                <FontAwesomeIcon icon={faTruck} className="mr-2" />
+                We're Hiring Drivers!
+              </Link>
             </div>
           </div>
         </div>

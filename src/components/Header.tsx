@@ -57,13 +57,6 @@ export default function Header() {
               Fleet
             </Link>
             <Link 
-              to="/apply" 
-              className="bg-yellow-500 hover:bg-yellow-600 text-blue-900 px-6 py-2 rounded-lg font-bold transition-all duration-300 transform hover:scale-105 animate-pulse shadow-lg"
-            >
-              <FontAwesomeIcon icon={faTruck} className="mr-2" />
-              We're Hiring Drivers!
-            </Link>
-            <Link 
               to="/contact" 
               className="bg-white hover:bg-gray-100 text-blue-900 px-6 py-2 rounded-lg font-bold transition-all duration-300 transform hover:scale-105"
             >
@@ -111,14 +104,6 @@ export default function Header() {
                 className="hover:text-yellow-400 transition-colors font-semibold text-lg py-2"
               >
                 Fleet
-              </Link>
-              <Link 
-                to="/apply" 
-                onClick={() => setIsMenuOpen(false)}
-                className="bg-yellow-500 hover:bg-yellow-600 text-blue-900 px-6 py-3 rounded-lg font-bold text-center transition-all"
-              >
-                <FontAwesomeIcon icon={faTruck} className="mr-2" />
-                We're Hiring Drivers!
               </Link>
               <Link 
                 to="/contact" 
