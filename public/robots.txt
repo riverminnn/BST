@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bst-j147.onrender.com/sitemap.xml
