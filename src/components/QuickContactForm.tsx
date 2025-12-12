@@ -151,8 +151,13 @@ export default function QuickContactForm({ onSubmit }: QuickContactFormProps) {
         </button>
       </form>
       
-      <p className="text-sm text-gray-700 text-center mt-4">
-        Or call us directly: <a href="tel:7706683771" className="text-blue-700 font-semibold hover:underline">(770) 668-3771</a>
+      <p className="text-sm text-gray-700 text-center mt-4 space-y-1">
+        <span className="block">Or call us directly:</span>
+        <span className="block font-semibold text-blue-800">James M Im · Direct</span>
+        <span className="block">
+          <a href="tel:7706683771" className="text-blue-700 font-semibold hover:underline">(770) 668-3771</a> ·{' '}
+          <a href="tel:7706269777" className="text-blue-700 font-semibold hover:underline">(770) 626-9777</a>
+        </span>
       </p>
     </div>
   );

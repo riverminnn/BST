@@ -163,8 +163,8 @@ Preferred Contact Method: ${formData.preferredContact}
                   <FontAwesomeIcon icon={faMapMarkerAlt} className="text-(--accent) mt-1" />
                   <div>
                     <p className="font-semibold text-(--strong)">Address</p>
-                    <p>106 Valambrosia Rd.</p>
-                    <p>Dublin, GA 31021</p>
+                    <p>106 Old Valambrosia Rd.</p>
+                    <p>Dublin, GA 301021</p>
                   </div>
                 </div>
               </div>

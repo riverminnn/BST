@@ -298,8 +298,8 @@ export default function Home() {
               </div>
               <div className="p-4 rounded-xl bg-(--card) border border-(--line)">
                 <p className="text-sm text-(--muted)">Address</p>
-                <p className="text-lg font-semibold">106 Valambrosia Rd.</p>
-                <p className="text-lg font-semibold">Dublin, GA 31021</p>
+                <p className="text-lg font-semibold">106 Old Valambrosia Rd.</p>
+                <p className="text-lg font-semibold">Dublin, GA 301021</p>
               </div>
             </div>
             <div className="flex flex-wrap justify-center gap-3">

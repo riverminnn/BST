@@ -546,8 +546,8 @@ Veteran Status: ${formData.veteranStatus || 'Not specified'}
                       </div>
                     </div>
 
-                    <div className="bg-[var(--pill)] p-4 rounded-lg space-y-4">
-                      <label className="flex items-start cursor-pointer">
+                    <div className="grid gap-3">
+                      <label className="flex gap-3 p-4 rounded-xl border border-[var(--line)] bg-[var(--card)] shadow-sm cursor-pointer">
                         <input
                           type="checkbox"
                           name="phoneConsent"
@@ -555,12 +555,17 @@ Veteran Status: ${formData.veteranStatus || 'Not specified'}
                           onChange={handleChange}
                           className="w-5 h-5 text-[var(--accent)] focus:ring-[var(--accent)] mt-1 cursor-pointer shrink-0"
                         />
-                        <span className="ml-3 text-sm text-[var(--muted)] leading-tight">
-                          By clicking the box below, I consent to receive phone and text communications from Best Service Trucking to inform me of educational or employment opportunities, which may include automated calls, text messages, or voicemails delivered by artificial intelligence (AI) technologies, including but not limited to AI voice agents or chatbots. These communications may be made using an automatic telephone dialing system (ATDS) and may involve prerecorded voices. The frequency of phone calls and text messages may vary and message and data charges may apply, depending on my mobile network provider and plan. The ability to opt-out will be made available to me.
-                        </span>
+                        <div className="space-y-1">
+                          <p className="font-semibold text-[var(--strong)]">Phone & text updates</p>
+                          <ul className="text-sm text-[var(--muted)] leading-relaxed list-disc pl-5 space-y-1">
+                            <li>Educational or employment opportunities from Best Service Trucking</li>
+                            <li>May include automated calls, texts, or prerecorded messages (ATDS)</li>
+                            <li>Message & data rates may apply; opt-out any time</li>
+                          </ul>
+                        </div>
                       </label>
 
-                      <label className="flex items-start cursor-pointer">
+                      <label className="flex gap-3 p-4 rounded-xl border border-[var(--line)] bg-[var(--card)] shadow-sm cursor-pointer">
                         <input
                           type="checkbox"
                           name="emailConsent"
@@ -568,9 +573,12 @@ Veteran Status: ${formData.veteranStatus || 'Not specified'}
                           onChange={handleChange}
                           className="w-5 h-5 text-[var(--accent)] focus:ring-[var(--accent)] mt-1 cursor-pointer shrink-0"
                         />
-                        <span className="ml-3 text-sm text-[var(--muted)] leading-tight">
-                          By clicking the box below, I consent to receive email communications from Best Service Trucking to inform me of educational or employment opportunities. The ability to opt-out will be made available to me.
-                        </span>
+                        <div className="space-y-1">
+                          <p className="font-semibold text-[var(--strong)]">Email updates</p>
+                          <p className="text-sm text-[var(--muted)] leading-relaxed">
+                            Consent to receive email communications about educational or employment opportunities. Opt-out will always be available.
+                          </p>
+                        </div>
                       </label>
                     </div>
 
@@ -704,7 +712,7 @@ Veteran Status: ${formData.veteranStatus || 'Not specified'}
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="inline-flex items-center px-8 py-3 bg-[var(--accent)] hover:opacity-90 text-slate-900 font-semibold rounded-lg transition-all duration-300 cursor-pointer"
+                  className="inline-flex items-center px-8 py-3 bg-[var(--accent)] hover:opacity-90 text-[var(--btn-text)] font-semibold rounded-lg transition-all duration-300 cursor-pointer"
                 >
                   Next
                   <FontAwesomeIcon icon={faArrowRight} className="ml-2" />

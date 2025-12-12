@@ -45,8 +45,8 @@ export default function Footer() {
               <div className="flex items-start">
                 <FontAwesomeIcon icon={faMapMarkerAlt} className="text-(--accent) mt-1 mr-3" />
                 <div>
-                  <p>106 Valambrosia Rd.</p>
-                  <p>Dublin, GA 31021</p>
+                  <p>106 Old Valambrosia Rd.</p>
+                  <p>Dublin, GA 301021</p>
                 </div>
               </div>
             </div>
