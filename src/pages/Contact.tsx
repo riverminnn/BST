@@ -92,12 +92,12 @@ Preferred Contact Method: ${formData.preferredContact}
           from_email: formData.email,
           phone: formData.phone,
           message: detailedMessage,
-          to_email: 'hatrumtruong03@gmail.com',
+          to_email: 'bstrucking25@gmail.com',
         },
         EMAILJS_CONFIG.PUBLIC_KEY
       );
       
-      console.log('Detailed email sent successfully to: hatrumtruong03@gmail.com');
+      console.log('Detailed email sent successfully to: bstrucking25@gmail.com');
       
       setSubmitStatus('success');
       setFormData({

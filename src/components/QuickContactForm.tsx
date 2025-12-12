@@ -47,12 +47,12 @@ export default function QuickContactForm({ onSubmit }: QuickContactFormProps) {
           from_email: formData.email,
           phone: formData.phone,
           message: formData.message,
-          to_email: 'hatrumtruong03@gmail.com',
+          to_email: 'bstrucking25@gmail.com',
         },
         EMAILJS_CONFIG.PUBLIC_KEY
       );
       
-      console.log('Email sent successfully to: hatrumtruong03@gmail.com');
+      console.log('Email sent successfully to: bstrucking25@gmail.com');
       
       if (onSubmit) {
         onSubmit(formData);
