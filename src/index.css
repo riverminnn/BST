@@ -20,8 +20,7 @@ body {
 /* Smooth scroll behavior */
 html {
     scroll-behavior: smooth;
-}
-
+  zoom: 0.9;
 /* Custom animations */
 @keyframes fadeIn {
     from {
