@@ -44,9 +44,6 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="hover:text-yellow-400 transition-colors font-semibold text-lg">
-              Home
-            </Link>
             <Link to="/about" className="hover:text-yellow-400 transition-colors font-semibold text-lg">
               About
             </Link>
@@ -58,9 +55,10 @@ export default function Header() {
             </Link>
             <Link 
               to="/contact" 
-              className="bg-white hover:bg-gray-100 text-blue-900 px-6 py-2 rounded-lg font-bold transition-all duration-300 transform hover:scale-105"
+              className="bg-white hover:bg-gray-100 text-blue-900 w-12 h-12 rounded-lg font-bold transition-all duration-300 transform hover:scale-110 flex items-center justify-center shadow-lg"
+              title="Contact Us"
             >
-              Contact Us
+              <FontAwesomeIcon icon={faEnvelope} className="text-xl" />
             </Link>
           </nav>
 

@@ -42,6 +42,12 @@ export default function Home() {
                 <FontAwesomeIcon icon={faTruck} className="mr-2" />
                 We're Hiring Drivers!
               </Link>
+              <Link 
+                to="/services" 
+                className="bg-white hover:bg-gray-100 text-blue-900 font-bold py-4 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+              >
+                Our Services
+              </Link>
             </div>
           </div>
         </div>
