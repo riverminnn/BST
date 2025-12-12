@@ -8,20 +8,27 @@ import Fleet from './pages/Fleet';
 import Contact from './pages/Contact';
 import FullApplication from './pages/FullApplication';
 import NotFound from './pages/NotFound';
+import { ThemeProvider } from './context/ThemeContext';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
-          <Route path="services" element={<Services />} />
-          <Route path="fleet" element={<Fleet />} />
-          <Route path="contact" element={<Contact />} />        <Route path="apply" element={<FullApplication />} />          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<Home />} />
+            <Route path="about" element={<About />} />
+            <Route path="services" element={<Services />} />
+            <Route path="fleet" element={<Fleet />} />
+            <Route path="contact" element={<Contact />} />
+            <Route path="apply" element={<FullApplication />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

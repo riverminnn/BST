@@ -10,181 +10,126 @@ import {
 
 export default function About() {
   return (
-    <div className="min-h-screen">
-      {/* Page Header */}
-      <section className="bg-linear-to-r from-blue-900 to-blue-800 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-5xl font-bold mb-4 text-center">About Us</h1>
-          <p className="text-xl text-center max-w-3xl mx-auto">
-            Nearly 16 years of experience delivering excellence in trucking services across the Southeast
+    <div className="min-h-screen text-(--strong)">
+      <section className="section-pad bg-(--bg-soft) border-b border-(--line)">
+        <div className="page-shell text-center space-y-4">
+          <span className="pill">About Best Service Trucking</span>
+          <h1 className="section-title">Sixteen years of calm, reliable freight moves.</h1>
+          <p className="section-subtitle">
+            Built in Dublin, GA and rooted in Savannah operations, we move cargo with disciplined simplicity—no drama, just dependable miles.
           </p>
         </div>
       </section>
 
-      {/* Company Story */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
-              <p className="text-lg text-gray-700 mb-4 leading-relaxed">
-                Best Service Trucking LLC was established in January 2025, but our roots in the trucking industry run deep. With nearly 16 years of experience in hauling containers, dry vans, and tanks, we've built a reputation on dependability and honest service.
-              </p>
-              <p className="text-lg text-gray-700 mb-4 leading-relaxed">
-                Our company was founded on the principle that every load deserves the same level of attention, care, and professionalism. We understand that your cargo represents more than just freight—it's your business, your commitment to your customers, and your reputation.
-              </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                From our base in Dublin, Georgia, we serve the entire Southeast region, with a particular focus on the Port of Savannah. Our team knows the pace and pressure of port logistics, and we're committed to making every pickup and delivery smooth and on-time.
-              </p>
+      <section className="section-pad">
+        <div className="page-shell grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+          <div className="space-y-4">
+            <h2 className="section-title">Our story</h2>
+            <p className="text-(--muted) leading-relaxed text-lg">
+              Best Service Trucking LLC launched in January 2025 on top of nearly 16 years of hauling containers, dry vans, and tanks. We built the company on a simple promise: every load gets the same care, every partner gets clear communication, every mile runs on time.
+            </p>
+            <p className="text-(--muted) leading-relaxed text-lg">
+              From Savannah ports to inland hubs, we keep the pace steady. Our roots in Dublin, GA keep us grounded; our regional expertise keeps freight moving across the Southeast without friction.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {[{
+              title: 'Mission',
+              copy: 'Deliver safe, reliable, efficient trucking that exceeds expectations through clarity and consistency.',
+            }, {
+              title: 'Vision',
+              copy: 'Be the Southeast partner teams trust most for calm, on-time logistics.',
+            }, {
+              title: 'Values',
+              copy: 'Safety first · Reliability always · Clear communication · Long-term partnerships · Professional excellence.',
+            }].map((item) => (
+              <div key={item.title} className="surface-card p-6 border border-(--line)">
+                <p className="text-xs uppercase tracking-[0.2em] text-(--muted) mb-2">{item.title}</p>
+                <p className="text-lg text-(--strong) leading-relaxed">{item.copy}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-pad bg-(--bg-soft) border-y border-(--line)">
+        <div className="page-shell space-y-12">
+          <div className="text-center space-y-3">
+            <span className="pill">What sets us apart</span>
+            <h2 className="section-title">The four habits that keep us steady.</h2>
+            <p className="section-subtitle">Operational discipline designed for ports, schedules, and people.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[{
+              icon: faShieldAlt,
+              title: 'Safety built-in',
+              items: ['Regular inspections', 'Trained port drivers', 'Regulation-first mindset'],
+            }, {
+              icon: faClock,
+              title: 'On-time reliability',
+              items: ['Real-time tracking', 'ELDs on every haul', 'Proactive updates'],
+            }, {
+              icon: faHandshake,
+              title: 'Partnership mindset',
+              items: ['Dedicated contacts', 'Flexible solutions', 'Long-term commitment'],
+            }].map((card) => (
+              <div key={card.title} className="surface-card p-6 border border-(--line)">
+                <div className="w-12 h-12 rounded-xl bg-(--pill) text-(--accent-strong) flex items-center justify-center text-xl mb-4">
+                  <FontAwesomeIcon icon={card.icon} />
+                </div>
+                <h3 className="text-xl font-semibold text-(--strong) mb-3">{card.title}</h3>
+                <ul className="space-y-2 text-(--muted) text-sm">
+                  {card.items.map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <FontAwesomeIcon icon={faCheckCircle} className="text-(--accent) mt-0.5" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-pad">
+        <div className="page-shell space-y-10">
+          <div className="text-center space-y-3">
+            <span className="pill">Experience</span>
+            <h2 className="section-title">Proof in the miles we run.</h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="surface-card p-5 text-center">
+              <div className="text-4xl font-bold text-(--accent)">16</div>
+              <p className="text-sm text-(--muted)">Years of hauling</p>
             </div>
-
-            <div className="space-y-6">
-              <div className="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-900">
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">Our Mission</h3>
-                <p className="text-gray-700 text-lg">
-                  To provide safe, reliable, and efficient trucking services that exceed our customers' expectations, building lasting partnerships through consistent performance and clear communication.
-                </p>
-              </div>
-
-              <div className="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-900">
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">Our Vision</h3>
-                <p className="text-gray-700 text-lg">
-                  To be the most trusted trucking partner in the Southeast, known for our unwavering commitment to safety, reliability, and customer service.
-                </p>
-              </div>
-
-              <div className="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-900">
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">Our Values</h3>
-                <p className="text-gray-700 text-lg">
-                  Safety First • Reliability Always • Clear Communication • Long-term Partnerships • Professional Excellence
-                </p>
-              </div>
+            <div className="surface-card p-5 text-center">
+              <FontAwesomeIcon icon={faUsers} className="text-3xl text-(--accent) mb-2" />
+              <p className="text-sm text-(--muted)">Professional team</p>
+            </div>
+            <div className="surface-card p-5 text-center">
+              <FontAwesomeIcon icon={faRoute} className="text-3xl text-(--accent) mb-2" />
+              <p className="text-sm text-(--muted)">Multi-state coverage</p>
+            </div>
+            <div className="surface-card p-5 text-center">
+              <FontAwesomeIcon icon={faHandshake} className="text-3xl text-(--accent) mb-2" />
+              <p className="text-sm text-(--muted)">Trusted partners</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Core Values */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">What Sets Us Apart</h2>
-            <p className="text-xl text-gray-600">Our commitment to excellence in every aspect of our service</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-lg shadow-lg">
-              <FontAwesomeIcon icon={faShieldAlt} className="text-5xl text-blue-900 mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Safety First</h3>
-              <p className="text-gray-700 mb-4">
-                Safety is not just a priority—it's our foundation. Every driver is extensively trained in safety protocols, and every vehicle is meticulously maintained to meet the highest standards.
-              </p>
-              <ul className="space-y-2 text-gray-700">
-                <li className="flex items-center">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-blue-900 mr-2" />
-                  Regular vehicle inspections
-                </li>
-                <li className="flex items-center">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-blue-900 mr-2" />
-                  Trained professional drivers
-                </li>
-                <li className="flex items-center">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-blue-900 mr-2" />
-                  Compliance with all regulations
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-lg">
-              <FontAwesomeIcon icon={faClock} className="text-5xl text-blue-900 mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">On-Time Reliability</h3>
-              <p className="text-gray-700 mb-4">
-                We understand that timing is critical in logistics. Our commitment to punctuality is backed by real-time tracking and proactive communication throughout the entire delivery process.
-              </p>
-              <ul className="space-y-2 text-gray-700">
-                <li className="flex items-center">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-blue-900 mr-2" />
-                  Electronic Logging Devices (ELDs)
-                </li>
-                <li className="flex items-center">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-blue-900 mr-2" />
-                  Real-time tracking updates
-                </li>
-                <li className="flex items-center">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-blue-900 mr-2" />
-                  Proactive communication
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-lg">
-              <FontAwesomeIcon icon={faHandshake} className="text-5xl text-blue-900 mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Partnership Approach</h3>
-              <p className="text-gray-700 mb-4">
-                We don't just haul loads—we build relationships. Your success is our success, and we're invested in helping your business grow through reliable, consistent service.
-              </p>
-              <ul className="space-y-2 text-gray-700">
-                <li className="flex items-center">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-blue-900 mr-2" />
-                  Dedicated account management
-                </li>
-                <li className="flex items-center">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-blue-900 mr-2" />
-                  Flexible solutions
-                </li>
-                <li className="flex items-center">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-blue-900 mr-2" />
-                  Long-term commitment
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Experience & Expertise */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Experience & Expertise</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center p-6">
-              <div className="text-5xl font-bold text-blue-900 mb-2">16</div>
-              <div className="text-xl font-semibold text-gray-700">Years of Experience</div>
-            </div>
-
-            <div className="text-center p-6">
-              <FontAwesomeIcon icon={faUsers} className="text-5xl text-blue-900 mb-4" />
-              <div className="text-xl font-semibold text-gray-700">Professional Team</div>
-            </div>
-
-            <div className="text-center p-6">
-              <FontAwesomeIcon icon={faRoute} className="text-5xl text-blue-900 mb-4" />
-              <div className="text-xl font-semibold text-gray-700">Multi-State Coverage</div>
-            </div>
-
-            <div className="text-center p-6">
-              <FontAwesomeIcon icon={faHandshake} className="text-5xl text-blue-900 mb-4" />
-              <div className="text-xl font-semibold text-gray-700">Trusted Partners</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="py-20 bg-linear-to-r from-blue-900 to-blue-800 text-white">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-6">Ready to Partner With Us?</h2>
-          <p className="text-xl mb-8">
-            Experience the difference that nearly 16 years of expertise and dedication can make for your business.
-          </p>
-          <a 
-            href="/#contact" 
-            className="inline-block bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold py-4 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105"
+      <section className="section-pad bg-(--bg-soft) border-t border-(--line)">
+        <div className="page-shell text-center space-y-4">
+          <h2 className="section-title">Ready to partner with a calm, reliable fleet?</h2>
+          <p className="section-subtitle">Let&apos;s plan your next move together.</p>
+          <a
+            href="/#contact"
+            className="inline-flex items-center gap-2 bg-(--accent) text-(--btn-text) font-bold px-6 py-3 rounded-full shadow-md"
           >
-            Contact Us Today
+            Contact us today
           </a>
         </div>
       </section>

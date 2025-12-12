@@ -1,293 +1,323 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faTruck, 
-  faShieldAlt, 
-  faClock, 
+import {
+  faTruck,
+  faShieldAlt,
+  faClock,
   faUsers,
-  faPhone,
   faEnvelope,
-  faMapMarkerAlt,
   faCheckCircle,
   faAnchor,
   faWarehouse,
-  faRoute
+  faRoute,
+  faPaperPlane,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 export default function Home() {
+  useScrollReveal();
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative bg-linear-to-r from-blue-900 via-blue-800 to-blue-900 text-white py-20 px-4">
-        <div className="absolute inset-0 bg-black opacity-20"></div>
-        <div className="relative max-w-7xl mx-auto">
-          <div className="flex flex-col items-center justify-center text-center animate-fade-in">
-            <div className="mb-6">
-              <FontAwesomeIcon icon={faTruck} className="text-6xl text-yellow-400 mb-4" />
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Best Service Trucking LLC
+    <div className="min-h-screen text-(--strong)">
+      <section className="relative overflow-hidden section-pad">
+        <div className="absolute inset-0 pointer-events-none opacity-70">
+          <div className="absolute -top-32 -right-10 w-80 h-80 rounded-full bg-[rgba(247,201,72,0.12)] blur-3xl" />
+          <div className="absolute -bottom-24 -left-10 w-96 h-96 rounded-full bg-[rgba(59,130,246,0.15)] blur-3xl" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.05),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.06),transparent_30%)]" />
+        </div>
+
+        <div className="page-shell grid md:grid-cols-2 gap-12 items-center relative z-10">
+          <div className="space-y-6 animate-fade-in">
+            <span className="pill">Savannah · Southeast</span>
+            <h1 className="section-title">
+              Logistics built for <span className="gradient-text">clean, reliable</span> moves.
             </h1>
-            <p className="text-2xl md:text-3xl font-semibold mb-4 text-yellow-400">
-              Safety. Reliability.
+            <p className="text-lg text-(--muted) leading-relaxed max-w-xl">
+              Port-to-door hauling with a disciplined, minimal workflow. We keep every touchpoint calm, clear, and on time—from Savannah to the entire Southeast.
             </p>
-            <p className="text-xl md:text-2xl mb-8 max-w-4xl">
-              Moving cargo with care and efficiency — from the Port of Savannah and anywhere in Georgia to the Southeast and beyond.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link 
-                to="/apply" 
-                className="bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-bold py-4 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-110 shadow-2xl animate-pulse hover:animate-none"
+            <div className="flex flex-wrap gap-3">
+              <Link
+                to="/apply"
+                className="btn-cta-pulse btn-shine btn-shine-auto inline-flex items-center gap-2 bg-(--accent) text-(--btn-text) font-bold px-5 py-3 rounded-full shadow-lg hover:shadow-xl transition-all"
               >
-                <FontAwesomeIcon icon={faTruck} className="mr-2" />
-                We're Hiring Drivers!
+                <FontAwesomeIcon icon={faTruck} />
+                Apply to drive
               </Link>
-              <Link 
-                to="/services" 
-                className="bg-white hover:bg-gray-100 text-blue-900 font-bold py-4 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+              <Link
+                to="/services"
+                className="btn-shine border-glow-hover inline-flex items-center gap-2 border border-(--line) bg-(--card) px-5 py-3 rounded-full text-(--strong) hover:border-(--accent)/40 transition-colors"
               >
-                Our Services
+                View services
               </Link>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Key Features */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="text-center p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <FontAwesomeIcon icon={faShieldAlt} className="text-5xl text-blue-900 mb-4" />
-              <h3 className="text-xl font-bold mb-2 text-gray-800">Safety First</h3>
-              <p className="text-gray-600">Every load handled by trained professionals</p>
-            </div>
-            <div className="text-center p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <FontAwesomeIcon icon={faClock} className="text-5xl text-blue-900 mb-4" />
-              <h3 className="text-xl font-bold mb-2 text-gray-800">On-Time Delivery</h3>
-              <p className="text-gray-600">Reliable service you can count on</p>
-            </div>
-            <div className="text-center p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <FontAwesomeIcon icon={faRoute} className="text-5xl text-blue-900 mb-4" />
-              <h3 className="text-xl font-bold mb-2 text-gray-800">Regional Coverage</h3>
-              <p className="text-gray-600">Serving the entire Southeast region</p>
-            </div>
-            <div className="text-center p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <FontAwesomeIcon icon={faUsers} className="text-5xl text-blue-900 mb-4" />
-              <h3 className="text-xl font-bold mb-2 text-gray-800">Expert Team</h3>
-              <p className="text-gray-600">16 years of hauling experience</p>
-            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {[{ label: 'Years hauling', value: '16+' }, { label: 'States covered', value: '7' }, { label: 'Ops window', value: '24/7' }].map((item, index) => (
+                <div key={item.label} className={`surface-card card-hover-lift p-4 scroll-reveal scroll-reveal-delay-${index + 1}`}>
+                  <div className="text-2xl font-bold text-(--accent)">{item.value}</div>
+                  <p className="text-sm text-(--muted)">{item.label}</p>
+                </div>
+              ))}            </div>
           </div>
-        </div>
-      </section>
 
-      {/* About Section */}
-      <section id="about" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">Who We Are</h2>
-              <p className="text-lg text-gray-700 mb-4 leading-relaxed">
-                At Best Service Trucking LLC, we're proud to keep freight moving across the Southeast region.
-              </p>
-              <p className="text-lg text-gray-700 mb-4 leading-relaxed">
-                Our company was established in January 2025, built on nearly 16 years of experience in hauling containers, dry vans, and tanks.
-              </p>
-              <p className="text-lg text-gray-700 mb-4 leading-relaxed">
-                We've carried forward a tradition of dependable, honest service that customers and partners can count on.
-              </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                Our team understands the pace and pressure of port logistics, and we work hard to make every pickup and delivery smooth and on-time. We believe in building strong, lasting relationships - not just hauling loads.
-              </p>
-            </div>
-            <div className="bg-linear-to-br from-blue-900 to-blue-700 p-8 rounded-lg text-white">
-              <h3 className="text-2xl font-bold mb-6">Why Partner With Us</h3>
-              <ul className="space-y-4">
-                <li className="flex items-start">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-yellow-400 text-xl mt-1 mr-3 shrink-0" />
-                  <span className="text-lg">Safety first: Every load handled by trained professionals</span>
+          <div className="space-y-4 animate-fade-in">
+            <div className="surface-card p-6 border border-(--line)">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.2em] text-(--muted)">Ops snapshot</p>
+                  <h3 className="text-2xl font-bold text-(--strong)">Every lane stays calm</h3>
+                </div>
+                <FontAwesomeIcon icon={faRoute} className="text-xl text-(--accent)" />
+              </div>
+              <ul className="space-y-3 text-sm text-(--muted)">
+                <li className="flex items-start gap-3">
+                  <FontAwesomeIcon icon={faCheckCircle} className="text-(--accent) mt-0.5" />
+                  Safety-first drivers trained for ports and live updates.
                 </li>
-                <li className="flex items-start">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-yellow-400 text-xl mt-1 mr-3 shrink-0" />
-                  <span className="text-lg">Reliable service: On-time pickups and deliveries are our standard</span>
+                <li className="flex items-start gap-3">
+                  <FontAwesomeIcon icon={faCheckCircle} className="text-(--accent) mt-0.5" />
+                  Minimal handoffs: clear milestones from pickup to delivery.
                 </li>
-                <li className="flex items-start">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-yellow-400 text-xl mt-1 mr-3 shrink-0" />
-                  <span className="text-lg">Clear communication: We keep our partners updated every step of the way</span>
-                </li>
-                <li className="flex items-start">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-yellow-400 text-xl mt-1 mr-3 shrink-0" />
-                  <span className="text-lg">Regional expertise: Deep knowledge of East Coast ports and Savannah operations</span>
-                </li>
-                <li className="flex items-start">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-yellow-400 text-xl mt-1 mr-3 shrink-0" />
-                  <span className="text-lg">Long-term partnerships: We treat every customer like part of our family</span>
+                <li className="flex items-start gap-3">
+                  <FontAwesomeIcon icon={faCheckCircle} className="text-(--accent) mt-0.5" />
+                  Real-time tracking with proactive check-ins—no surprises.
                 </li>
               </ul>
             </div>
+
+            <div className="surface-card p-5 flex flex-col gap-3 border border-(--line)">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-full bg-(--pill) text-(--accent-strong) flex items-center justify-center text-xl font-bold">24/7</div>
+                <div>
+                  <p className="text-sm text-(--muted)">Call dispatch</p>
+                  <p className="font-semibold">(770) 668-3771</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-full bg-(--card) border border-(--line) flex items-center justify-center">
+                  <FontAwesomeIcon icon={faEnvelope} className="text-(--accent)" />
+                </div>
+                <div>
+                  <p className="text-sm text-(--muted)">Email</p>
+                  <a href="mailto:bstrucking25@gmail.com" className="font-semibold text-(--strong) hover:text-(--accent) transition-colors">
+                    bstrucking25@gmail.com
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
-      <section id="services" className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">What We Do</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Comprehensive trucking solutions for all your freight needs
+      <section className="section-pad bg-(--bg-soft) border-y border-(--line)">
+        <div className="page-shell space-y-12">
+          <div className="text-center space-y-4 scroll-reveal">
+            <span className="pill">Operations</span>
+            <h2 className="section-title">The <span className="gradient-text">calm, minimal</span> workflow behind every haul.</h2>
+            <p className="section-subtitle">
+              Four anchors keep our moves steady—safety, punctuality, regional mastery, and the people who own the details.
             </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {[{
+              icon: faShieldAlt,
+              title: 'Safety-first',
+              body: 'Tight protocols, disciplined inspections, and trained port specialists.',
+            }, {
+              icon: faClock,
+              title: 'On time, every time',
+              body: 'Schedules built with buffers and live ETAs to keep your teams ready.',
+            }, {
+              icon: faRoute,
+              title: 'Regional fluency',
+              body: 'Savannah expertise with routes across GA, AL, SC, FL, TN, LA, TX.',
+            }, {
+              icon: faUsers,
+              title: 'Human clarity',
+              body: 'Single-threaded communication and proactive updates—no chasing.',
+            }].map((card, index) => (
+              <div key={card.title} className={`surface-card card-hover-lift p-6 flex flex-col gap-4 scroll-reveal scroll-reveal-delay-${index + 1}`}>
+                <div className="w-12 h-12 rounded-xl bg-(--pill) text-(--accent-strong) flex items-center justify-center text-xl">
+                  <FontAwesomeIcon icon={card.icon} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-(--strong)">{card.title}</h3>
+                  <p className="text-sm text-(--muted) leading-relaxed">{card.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="services" className="section-pad">
+        <div className="page-shell space-y-10">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 scroll-reveal">
+            <div>
+              <span className="pill">What we do</span>
+              <h2 className="section-title">Port precision, <span className="gradient-text">flexible delivery</span>.</h2>
+              <p className="section-subtitle text-left md:max-w-xl">
+                Two focused service lanes keep freight moving without clutter—container pulls from Savannah and adaptable pickup/delivery everywhere in Georgia.
+              </p>
+            </div>
+            <Link
+              to="/contact"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-(--accent) hover:text-(--strong)"
+            >
+              Book a move
+              <FontAwesomeIcon icon={faPaperPlane} className="text-xs" />
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white p-8 rounded-lg shadow-lg">
-              <FontAwesomeIcon icon={faAnchor} className="text-5xl text-blue-900 mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Port Container Services</h3>
-              <p className="text-gray-700 mb-4">
-                We specialize in pulling loaded containers from ports and delivering them safely to customers, both locally and regionally.
-              </p>
-              <p className="text-gray-700 mb-4 font-semibold">Our operations focus on the Port of Savannah, covering:</p>
-              <ul className="space-y-2 text-gray-700">
-                <li className="flex items-center">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-blue-900 mr-2" />
-                  The Atlanta metro area
+            <div className="surface-card card-hover-lift p-7 border border-(--line) scroll-reveal-left">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-11 h-11 rounded-lg bg-(--pill) text-(--accent-strong) flex items-center justify-center text-xl">
+                  <FontAwesomeIcon icon={faAnchor} />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-(--strong)">Port container pulls</h3>
+                  <p className="text-sm text-(--muted)">Savannah as home base; ATL metro and the Southeast in rhythm.</p>
+                </div>
+              </div>
+              <ul className="space-y-3 text-(--muted)">
+                <li className="flex items-start gap-2">
+                  <FontAwesomeIcon icon={faCheckCircle} className="text-(--accent) mt-0.5" />
+                  Local and regional deliveries with port-hardened drivers.
                 </li>
-                <li className="flex items-center">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-blue-900 mr-2" />
-                  Neighboring states: Alabama, South Carolina, and Florida
+                <li className="flex items-start gap-2">
+                  <FontAwesomeIcon icon={faCheckCircle} className="text-(--accent) mt-0.5" />
+                  Atlanta metro, AL, SC, FL plus extended runs to TN, LA, TX.
                 </li>
-                <li className="flex items-center">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-blue-900 mr-2" />
-                  Extended routes to Tennessee, Louisiana, and Texas
+                <li className="flex items-start gap-2">
+                  <FontAwesomeIcon icon={faCheckCircle} className="text-(--accent) mt-0.5" />
+                  Real-time visibility and compliance baked into every pull.
                 </li>
               </ul>
             </div>
 
-            <div className="bg-white p-8 rounded-lg shadow-lg">
-              <FontAwesomeIcon icon={faWarehouse} className="text-5xl text-blue-900 mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Flexible Pickup & Delivery</h3>
-              <p className="text-gray-700 mb-4">
-                In addition to port-to-customer hauls, we also pick up loads from anywhere in Georgia and deliver them directly to our customers.
-              </p>
-              <p className="text-gray-700 mb-4">
-                This flexibility allows us to meet a wide range of transportation needs - whether your freight starts at the port, your warehouse, or anywhere in between.
-              </p>
-              <p className="text-gray-700">
-                With deep experience at ports, we're ready to handle your import or export containers with care and precision.
-              </p>
+            <div className="surface-card card-hover-lift p-7 border border-(--line) scroll-reveal-right">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-11 h-11 rounded-lg bg-(--pill) text-(--accent-strong) flex items-center justify-center text-xl">
+                  <FontAwesomeIcon icon={faWarehouse} />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-(--strong)">Flexible pickup & delivery</h3>
+                  <p className="text-sm text-(--muted)">Warehouse to warehouse or custom routes across Georgia.</p>
+                </div>
+              </div>
+              <ul className="space-y-3 text-(--muted)">
+                <li className="flex items-start gap-2">
+                  <FontAwesomeIcon icon={faCheckCircle} className="text-(--accent) mt-0.5" />
+                  Port-to-customer and facility-to-facility moves.
+                </li>
+                <li className="flex items-start gap-2">
+                  <FontAwesomeIcon icon={faCheckCircle} className="text-(--accent) mt-0.5" />
+                  Custom Georgia pickups with the same on-time discipline.
+                </li>
+                <li className="flex items-start gap-2">
+                  <FontAwesomeIcon icon={faCheckCircle} className="text-(--accent) mt-0.5" />
+                  Containers, dry vans, and tanks handled with care.
+                </li>
+              </ul>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Fleet Section */}
-      <section id="fleet" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Fleet & Team</h2>
+      <section id="fleet" className="section-pad bg-(--bg-soft) border-t border-(--line)">
+        <div className="page-shell grid lg:grid-cols-2 gap-10 items-start">
+          <div className="space-y-6 scroll-reveal-left">
+            <span className="pill">Fleet & team</span>
+            <h2 className="section-title">Modern equipment, <span className="gradient-text">people who care</span>.</h2>
+            <p className="section-subtitle text-left">
+              Clean, well-maintained trucks paired with drivers trained for ports, safety, and respectful communication.
+            </p>
+
+            <div className="space-y-4">
+              {[{
+                icon: faTruck,
+                title: 'Modern equipment',
+                body: 'Meticulous preventive maintenance keeps every rig ready.',
+              }, {
+                icon: faUsers,
+                title: 'Professional drivers',
+                body: 'Port procedures, safety standards, and courteous updates.',
+              }, {
+                icon: faClock,
+                title: 'Live tracking',
+                body: 'ELDs and proactive check-ins keep everyone aligned.',
+              }].map((item) => (
+                <div key={item.title} className="surface-card card-hover-lift p-5 flex gap-4 items-start">
+                  <div className="w-11 h-11 rounded-xl bg-(--pill) text-(--accent-strong) flex items-center justify-center text-xl">
+                    <FontAwesomeIcon icon={item.icon} />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-(--strong)">{item.title}</h3>
+                    <p className="text-sm text-(--muted) leading-relaxed">{item.body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="space-y-6">
-              <div className="flex items-start">
-                <FontAwesomeIcon icon={faTruck} className="text-3xl text-blue-900 mt-1 mr-4 shrink-0" />
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Modern Equipment</h3>
-                  <p className="text-gray-700">
-                    Our trucks are modern, well-maintained, and always ready to roll. Each vehicle is regularly serviced to ensure peak performance and reliability.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start">
-                <FontAwesomeIcon icon={faUsers} className="text-3xl text-blue-900 mt-1 mr-4 shrink-0" />
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Professional Drivers</h3>
-                  <p className="text-gray-700">
-                    Each driver is trained in port procedures, safety standards, and professional communication. We're proud of our team's reliability — because every load deserves attention, care, and respect from port to door.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start">
-                <FontAwesomeIcon icon={faClock} className="text-3xl text-blue-900 mt-1 mr-4 shrink-0" />
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Real-Time Tracking</h3>
-                  <p className="text-gray-700">
-                    We use Electronic Logging Devices (ELDs) to track and manage every delivery in real time — ensuring accuracy, transparency, and compliance throughout the entire process. This system helps us keep our partners updated and makes sure every load stays on schedule.
-                  </p>
-                </div>
-              </div>
+          <div className="surface-card card-hover-lift p-7 border border-(--line) space-y-6 scroll-reveal-right">
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-(--muted)">Partners we grow with</p>
+              <h3 className="text-2xl font-bold text-(--strong) mt-2">Trusted by leading teams.</h3>
+              <p className="text-sm text-(--muted) mt-3">Long-term relationships with brokers and carriers, including Korean leaders.</p>
             </div>
-
-            <div className="bg-blue-900 text-white p-8 rounded-lg">
-              <h3 className="text-2xl font-bold mb-6">Our Trusted Partners</h3>
-              <p className="text-lg mb-6">
-                We are proud to collaborate with various brokers and carriers. We do not just work with our partners — we grow together. Each partnership is built on trust, shared vision, and the belief that collaboration drives success.
-              </p>
-              <p className="text-lg mb-4 font-semibold">We have long-term relationships working with Korean companies:</p>
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div className="bg-white bg-opacity-10 p-4 rounded-lg text-black">
-                  <p className="text-xl font-bold">Samsung</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {['Samsung', 'Lotte', 'Glovis', 'GFA', 'GET', 'MIS'].map((name, index) => (
+                <div key={name} className={`rounded-xl border border-(--line) bg-(--card) text-center py-3 text-sm font-semibold text-(--strong) card-hover-lift scroll-reveal-scale scroll-reveal-delay-${index + 1}`}>
+                  {name}
                 </div>
-                <div className="bg-white bg-opacity-10 p-4 rounded-lg text-black">
-                  <p className="text-xl font-bold">Lotte</p>
-                </div>
-                <div className="bg-white bg-opacity-10 p-4 rounded-lg text-black">
-                  <p className="text-xl font-bold">Glovis</p>
-                </div>
-                <div className="bg-white bg-opacity-10 p-4 rounded-lg text-black">
-                  <p className="text-xl font-bold">GFA</p>
-                </div>
-                <div className="bg-white bg-opacity-10 p-4 rounded-lg text-black">
-                  <p className="text-xl font-bold">GET</p>
-                </div>
-                <div className="bg-white bg-opacity-10 p-4 rounded-lg text-black">
-                  <p className="text-xl font-bold">MIS</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section id="contact" className="py-20 bg-blue-700 text-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Contact Us</h2>
-            <p className="text-xl">We're ready to earn your trust — one haul at a time.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
-            <div className="text-center p-10 bg-white rounded-2xl shadow-xl">
-              <FontAwesomeIcon icon={faPhone} className="text-6xl text-yellow-500 mb-6" />
-              <h3 className="text-xl font-bold mb-4 text-gray-900">Phone</h3>
-              <p className="text-lg text-gray-700 mb-2">(770) 668-3771</p>
-              <p className="text-lg text-gray-700">(770) 626-9777</p>
+      <section id="contact" className="section-pad">
+        <div className="page-shell">
+          <div className="surface-card p-10 text-center border border-(--line) flex flex-col gap-6 scroll-reveal-scale">
+            <div className="flex flex-col gap-2">
+              <span className="pill mx-auto">Let&apos;s move</span>
+              <h2 className="section-title">Ready for a <span className="gradient-text">calm, on-time</span> haul?</h2>
+              <p className="section-subtitle">We earn trust one load at a time. Call, email, or start with a quick form.</p>
             </div>
-
-            <div className="text-center p-10 bg-white rounded-2xl shadow-xl">
-              <FontAwesomeIcon icon={faEnvelope} className="text-6xl text-yellow-500 mb-6" />
-              <h3 className="text-xl font-bold mb-4 text-gray-900">Email</h3>
-              <p className="text-lg text-gray-700">bstrucking25@gmail.com</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left md:text-center">
+              <div className="p-4 rounded-xl bg-(--card) border border-(--line)">
+                <p className="text-sm text-(--muted)">Phone</p>
+                <p className="text-lg font-semibold">(770) 668-3771</p>
+                <p className="text-lg font-semibold">(770) 626-9777</p>
+              </div>
+              <div className="p-4 rounded-xl bg-(--card) border border-(--line)">
+                <p className="text-sm text-(--muted)">Email</p>
+                <p className="text-lg font-semibold">bstrucking25@gmail.com</p>
+              </div>
+              <div className="p-4 rounded-xl bg-(--card) border border-(--line)">
+                <p className="text-sm text-(--muted)">Address</p>
+                <p className="text-lg font-semibold">106 Valambrosia Rd.</p>
+                <p className="text-lg font-semibold">Dublin, GA 31021</p>
+              </div>
             </div>
-
-            <div className="text-center p-10 bg-white rounded-2xl shadow-xl">
-              <FontAwesomeIcon icon={faMapMarkerAlt} className="text-6xl text-yellow-500 mb-6" />
-              <h3 className="text-xl font-bold mb-4 text-gray-900">Address</h3>
-              <p className="text-lg text-gray-700">106 Valambrosia Rd.</p>
-              <p className="text-lg text-gray-700">Dublin, GA 31021</p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link
+                to="/contact"
+                className="btn-shine inline-flex items-center gap-2 bg-(--accent) text-(--btn-text) font-bold px-5 py-3 rounded-full shadow-md"
+              >
+                Contact us
+                <FontAwesomeIcon icon={faEnvelope} className="text-sm" />
+              </Link>
+              <Link
+                to="/apply"
+                className="btn-shine border-glow-hover inline-flex items-center gap-2 border border-(--line) bg-(--card) px-5 py-3 rounded-full text-(--strong)"
+              >
+                Apply now
+                <FontAwesomeIcon icon={faTruck} className="text-sm" />
+              </Link>
             </div>
-          </div>
-
-          <div className="text-center">
-            <p className="text-2xl font-semibold italic mb-4">
-              "Your goals become our mission — we only succeed when you do."
-            </p>
-            <p className="text-lg">
-              Thank you for trusting Best Service Trucking. We're proud to move your cargo safely, reliably, and on time — every mile, every day.
-            </p>
           </div>
         </div>
       </section>

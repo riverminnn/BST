@@ -1,114 +1,161 @@
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faTruck, 
-  faPhone, 
+import {
+  faTruck,
+  faPhone,
   faEnvelope,
   faBars,
-  faTimes
+  faTimes,
+  faArrowUpRightFromSquare,
+  faSun,
+  faMoon,
 } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+
+  const navLink = (to: string, label: string, extra?: string) => (
+    <Link
+      to={to}
+      className={`text-sm font-semibold transition-colors px-3 py-2 rounded-full ${
+        theme === 'dark'
+          ? 'text-(--muted) hover:text-(--strong) hover:bg-(--nav-hover)'
+          : 'text-white/90 hover:text-white hover:bg-white/10'
+      } ${extra ?? ''}`}
+      onClick={() => setIsMenuOpen(false)}
+    >
+      {label}
+    </Link>
+  );
 
   return (
-    <header className="bg-blue-900 text-white shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Top bar */}
-        <div className="border-b border-blue-800 py-2 hidden md:flex justify-between items-center text-sm">
-          <div className="flex items-center space-x-6">
-            <a href="tel:7706683771" className="hover:text-yellow-400 transition-colors">
-              <FontAwesomeIcon icon={faPhone} className="mr-2" />
-              (770) 668-3771
-            </a>
-            <a href="mailto:bstrucking25@gmail.com" className="hover:text-yellow-400 transition-colors">
-              <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
+    <header className={`sticky top-0 z-50 border-b backdrop-blur-xl transition-colors duration-300 ${
+      theme === 'dark' 
+        ? 'border-(--line) bg-(--header-bg)' 
+        : 'border-blue-600/20 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700'
+    }`}>
+      <div className="page-shell">
+        <div className={`hidden md:flex items-center justify-between py-3 text-xs ${theme === 'dark' ? 'text-(--muted)' : 'text-white/80'}`}>
+          <div className="flex items-center gap-3">
+            <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full font-semibold text-xs ${
+              theme === 'dark' ? 'pill' : 'bg-white/15 text-white'
+            }`}>
+              <FontAwesomeIcon icon={faTruck} />
+              On the road 24/7
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <FontAwesomeIcon icon={faPhone} className={theme === 'dark' ? 'text-(--accent)' : 'text-yellow-300'} />
+              (770) 668-3771 · (770) 626-9777
+            </span>
+            <a
+              href="mailto:bstrucking25@gmail.com"
+              className={`inline-flex items-center gap-2 transition-colors ${theme === 'dark' ? 'hover:text-(--strong)' : 'hover:text-white'}`}
+            >
+              <FontAwesomeIcon icon={faEnvelope} className={theme === 'dark' ? 'text-(--accent)' : 'text-yellow-300'} />
               bstrucking25@gmail.com
             </a>
           </div>
-          <div className="text-yellow-400 font-semibold">
-            Safety. Reliability.
-          </div>
+          <span className={`font-semibold ${theme === 'dark' ? 'text-(--accent)' : 'text-yellow-300'}`}>Safety · Reliability</span>
         </div>
 
-        {/* Main navigation */}
-        <div className="py-4 flex justify-between items-center">
-          <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-            <FontAwesomeIcon icon={faTruck} className="text-3xl text-yellow-400" />
-            <div>
-              <div className="text-2xl font-bold">Best Service Trucking</div>
-              <div className="text-sm text-gray-300">Moving Cargo with Care</div>
+        <div className="flex items-center justify-between py-4">
+          <Link
+            to="/"
+            className={`flex items-center gap-3 hover:opacity-90 transition-opacity ${theme === 'dark' ? 'text-(--strong)' : 'text-white'}`}
+          >
+            <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center shadow-lg ${
+              theme === 'dark' ? 'bg-(--card) border-(--line)' : 'bg-white border-white/40'
+            }`}>
+              <FontAwesomeIcon icon={faTruck} className={`text-xl ${theme === 'dark' ? 'text-(--accent)' : 'text-blue-600'}`} />
+            </div>
+            <div className="leading-tight">
+              <div className="text-lg font-bold">Best Service Trucking</div>
+              <div className={`text-xs ${theme === 'dark' ? 'text-(--muted)' : 'text-white/70'}`}>Moving cargo with care</div>
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/about" className="hover:text-yellow-400 transition-colors font-semibold text-lg">
-              About
-            </Link>
-            <Link to="/services" className="hover:text-yellow-400 transition-colors font-semibold text-lg">
-              Services
-            </Link>
-            <Link to="/fleet" className="hover:text-yellow-400 transition-colors font-semibold text-lg">
-              Fleet
-            </Link>
-            <Link 
-              to="/contact" 
-              className="bg-white hover:bg-gray-100 text-blue-900 w-12 h-12 rounded-lg font-bold transition-all duration-300 transform hover:scale-110 flex items-center justify-center shadow-lg"
-              title="Contact Us"
+          <div className="hidden md:flex items-center gap-2">
+            {navLink('/about', 'About')}
+            {navLink('/services', 'Services')}
+            {navLink('/fleet', 'Fleet')}
+            {navLink('/contact', 'Contact')}
+            
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ml-1 ${
+                theme === 'dark'
+                  ? 'bg-(--card) border border-(--line) hover:bg-(--nav-hover) text-(--accent)'
+                  : 'bg-white/15 border border-white/20 hover:bg-white/25 text-yellow-300'
+              }`}
+              aria-label="Toggle theme"
             >
-              <FontAwesomeIcon icon={faEnvelope} className="text-xl" />
-            </Link>
-          </nav>
+              <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} className="text-sm" />
+            </button>
 
-          {/* Mobile menu button */}
-          <button 
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-2xl cursor-pointer"
-          >
-            <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} />
-          </button>
+            <Link
+              to="/apply"
+              className={`inline-flex items-center gap-2 font-bold px-4 py-2 rounded-full shadow-md hover:shadow-lg transition-all ml-1 ${
+                theme === 'dark' 
+                  ? 'bg-(--accent) text-(--btn-text)' 
+                  : 'bg-yellow-400 text-blue-900 hover:bg-yellow-300'
+              }`}
+            >
+              Apply
+              <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-sm" />
+            </Link>
+          </div>
+
+          <div className="md:hidden flex items-center gap-2">
+            {/* Mobile Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className={`w-11 h-11 rounded-xl flex items-center justify-center ${
+                theme === 'dark' ? 'bg-(--card) border border-(--line) text-(--accent)' : 'bg-white/15 border border-white/20 text-yellow-300'
+              }`}
+              aria-label="Toggle theme"
+            >
+              <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} />
+            </button>
+            
+            <button
+              onClick={() => setIsMenuOpen((open) => !open)}
+              className={`w-11 h-11 rounded-xl flex items-center justify-center ${
+                theme === 'dark' ? 'bg-(--card) border border-(--line) text-(--strong)' : 'bg-white/15 border border-white/20 text-white'
+              }`}
+              aria-label="Toggle navigation"
+            >
+              <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} />
+            </button>
+          </div>
         </div>
 
-        {/* Mobile Navigation */}
         {isMenuOpen && (
-          <nav className="md:hidden py-4 border-t border-blue-800">
-            <div className="flex flex-col space-y-4">
-              <Link 
-                to="/" 
+          <nav className="md:hidden pb-4">
+            <div className={`flex flex-col gap-2 rounded-2xl border p-3 shadow-lg backdrop-blur-xl ${
+              theme === 'dark' 
+                ? 'border-(--line) bg-(--card)' 
+                : 'border-blue-400/30 bg-blue-600/95'
+            }`}>
+              {navLink('/', 'Home', 'text-base px-4 py-3')}
+              {navLink('/about', 'About', 'text-base px-4 py-3')}
+              {navLink('/services', 'Services', 'text-base px-4 py-3')}
+              {navLink('/fleet', 'Fleet', 'text-base px-4 py-3')}
+              {navLink('/contact', 'Contact', 'text-base px-4 py-3')}
+              <Link
+                to="/apply"
                 onClick={() => setIsMenuOpen(false)}
-                className="hover:text-yellow-400 transition-colors font-semibold text-lg py-2"
+                className={`w-full inline-flex items-center justify-center gap-2 font-bold px-4 py-3 rounded-xl shadow-md ${
+                  theme === 'dark' 
+                    ? 'bg-(--accent) text-(--btn-text)' 
+                    : 'bg-yellow-400 text-blue-900'
+                }`}
               >
-                Home
-              </Link>
-              <Link 
-                to="/about" 
-                onClick={() => setIsMenuOpen(false)}
-                className="hover:text-yellow-400 transition-colors font-semibold text-lg py-2"
-              >
-                About
-              </Link>
-              <Link 
-                to="/services" 
-                onClick={() => setIsMenuOpen(false)}
-                className="hover:text-yellow-400 transition-colors font-semibold text-lg py-2"
-              >
-                Services
-              </Link>
-              <Link 
-                to="/fleet" 
-                onClick={() => setIsMenuOpen(false)}
-                className="hover:text-yellow-400 transition-colors font-semibold text-lg py-2"
-              >
-                Fleet
-              </Link>
-              <Link 
-                to="/contact" 
-                onClick={() => setIsMenuOpen(false)}
-                className="bg-yellow-500 hover:bg-yellow-600 text-blue-900 px-6 py-2 rounded-lg font-bold transition-all duration-300 text-center"
-              >
-                Contact Us
+                Apply Today
+                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-sm" />
               </Link>
             </div>
           </nav>
