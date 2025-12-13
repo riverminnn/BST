@@ -6,7 +6,9 @@ import {
   faMapMarkerAlt,
   faPaperPlane,
   faTruck,
-  faBox
+  faBox,
+  faCheck,
+  faXmark
 } from '@fortawesome/free-solid-svg-icons';
 import emailjs from '@emailjs/browser';
 import { EMAILJS_CONFIG } from '../config/emailjs';
@@ -31,6 +33,47 @@ interface DetailedFormData {
   preferredContact: string;
 }
 
+// Validation helper - returns status and icon info
+const getValidationStatus = (value: string, isRequired: boolean, type?: string): { status: string; isValid: boolean } | null => {
+  if (!value) {
+    return isRequired ? null : null; // No indicator when empty
+  }
+  
+  // Check specific validations
+  if (type === 'email') {
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    return { status: emailValid ? 'valid' : 'invalid', isValid: emailValid };
+  }
+  
+  if (type === 'phone') {
+    const phoneValid = value.replace(/\D/g, '').length >= 10;
+    return { status: phoneValid ? 'valid' : 'invalid', isValid: phoneValid };
+  }
+  
+  // For required fields with value
+  if (isRequired) {
+    const hasValue = value.trim().length > 0;
+    return { status: hasValue ? 'valid' : 'invalid', isValid: hasValue };
+  }
+  
+  // For optional fields with value
+  return value.trim().length > 0 ? { status: 'optional-filled', isValid: true } : null;
+};
+
+// Validation Icon component
+const ValidationIcon = ({ value, isRequired, type, touched }: { value: string; isRequired: boolean; type?: string; touched: boolean }) => {
+  if (!touched) return null;
+  
+  const validation = getValidationStatus(value, isRequired, type);
+  if (!validation) return null;
+  
+  return (
+    <span className={`validation-icon ${validation.status}`}>
+      <FontAwesomeIcon icon={validation.isValid ? faCheck : faXmark} />
+    </span>
+  );
+};
+
 export default function Contact() {
   const [formData, setFormData] = useState<DetailedFormData>({
     firstName: '',
@@ -47,6 +90,7 @@ export default function Contact() {
     preferredContact: 'email'
   });
 
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
@@ -57,31 +101,20 @@ export default function Contact() {
     });
   };
 
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setTouched({
+      ...touched,
+      [e.target.name]: true
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
     try {
-      // Prepare detailed message
-      const detailedMessage = `
-CONTACT DETAILS:
-Name: ${formData.firstName} ${formData.lastName}
-Email: ${formData.email}
-Phone: ${formData.phone}
-Company: ${formData.company || 'N/A'}
-
-SHIPPING DETAILS:
-Service Type: ${formData.serviceType}
-Cargo Type: ${formData.cargoType}
-Pickup Location: ${formData.pickupLocation}
-Delivery Location: ${formData.deliveryLocation}
-Shipment Date: ${formData.shipmentDate || 'Not specified'}
-
-ADDITIONAL INFORMATION:
-${formData.additionalDetails}
-
-Preferred Contact Method: ${formData.preferredContact}
-      `.trim();
+      // Build HTML without line breaks to prevent email clients from adding extra spacing
+      const detailedMessage = `<table style="width:100%;border-collapse:collapse;font-size:13px;font-family:'Segoe UI',Tahoma,sans-serif;"><tr><td colspan="2" style="background:#1e40af;color:white;padding:6px 10px;font-weight:700;font-size:11px;">👤 CONTACT DETAILS</td></tr><tr><td style="padding:4px 8px;color:#64748b;width:110px;background:#fff;border:1px solid #e2e8f0;"><strong>Name:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.firstName} ${formData.lastName}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Email:</strong></td><td style="padding:4px 8px;color:#2563eb;background:#fff;border:1px solid #e2e8f0;">${formData.email}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Phone:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.phone}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Company:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.company || 'N/A'}</td></tr><tr><td colspan="2" style="background:#1e40af;color:white;padding:6px 10px;font-weight:700;font-size:11px;">📦 SHIPPING DETAILS</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Service Type:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.serviceType}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Cargo Type:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.cargoType}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Pickup:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.pickupLocation}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Delivery:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.deliveryLocation}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Ship Date:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.shipmentDate || 'Not specified'}</td></tr><tr><td colspan="2" style="background:#1e40af;color:white;padding:6px 10px;font-weight:700;font-size:11px;">📝 ADDITIONAL INFO</td></tr><tr><td colspan="2" style="padding:8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.additionalDetails || 'None'}</td></tr><tr><td colspan="2" style="background:#1e40af;color:white;padding:6px 10px;font-weight:700;font-size:11px;">⚙️ PREFERENCES</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Contact Method:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.preferredContact}</td></tr></table>`;
 
       // Send email using EmailJS
       await emailjs.send(
@@ -186,16 +219,16 @@ Preferred Contact Method: ${formData.preferredContact}
               </div>
 
               {submitStatus === 'success' && (
-                <div className="mb-6 p-5 rounded-xl border border-green-500/40 bg-green-500/10 text-green-100">
-                  <h3 className="font-semibold mb-1">Message sent successfully</h3>
-                  <p>Thank you for contacting Best Service Trucking. We&apos;ll reply within 24 hours.</p>
+                <div className="mb-6 p-5 rounded-xl border border-green-500/40 bg-green-500/15">
+                  <h3 className="font-semibold mb-1 text-green-700">Message sent successfully</h3>
+                  <p className="text-green-600">Thank you for contacting Best Service Trucking. We&apos;ll reply within 24 hours.</p>
                 </div>
               )}
 
               {submitStatus === 'error' && (
-                <div className="mb-6 p-5 rounded-xl border border-red-500/40 bg-red-500/10 text-red-100">
-                  <h3 className="font-semibold mb-1">Error sending message</h3>
-                  <p>Please try again or call us directly.</p>
+                <div className="mb-6 p-5 rounded-xl border border-red-500/40 bg-red-500/15">
+                  <h3 className="font-semibold mb-1 text-red-700">Error sending message</h3>
+                  <p className="text-red-600">Please try again or call us directly.</p>
                 </div>
               )}
 
@@ -209,43 +242,68 @@ Preferred Contact Method: ${formData.preferredContact}
                     {[{ name: 'firstName', label: 'First Name *' }, { name: 'lastName', label: 'Last Name *' }].map((field) => (
                       <div key={field.name}>
                         <label className="block text-sm font-semibold text-(--muted) mb-2">{field.label}</label>
-                        <input
-                          type="text"
-                          name={field.name}
-                          value={(formData as any)[field.name]}
-                          onChange={handleChange}
-                          required
-                          className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) placeholder:text-(--muted) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none"
-                        />
+                        <div className="input-wrapper">
+                          <input
+                            type="text"
+                            name={field.name}
+                            value={(formData as any)[field.name]}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            required
+                            className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) placeholder:text-(--muted) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none transition-all"
+                          />
+                          <ValidationIcon value={(formData as any)[field.name]} isRequired={true} touched={touched[field.name]} />
+                        </div>
                       </div>
                     ))}
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {[{ name: 'email', label: 'Email Address *', type: 'email' }, { name: 'phone', label: 'Phone Number *', type: 'tel' }].map((field) => (
-                      <div key={field.name}>
-                        <label className="block text-sm font-semibold text-(--muted) mb-2">{field.label}</label>
+                    <div>
+                      <label className="block text-sm font-semibold text-(--muted) mb-2">Email Address *</label>
+                      <div className="input-wrapper">
                         <input
-                          type={field.type}
-                          name={field.name}
-                          value={(formData as any)[field.name]}
+                          type="email"
+                          name="email"
+                          value={formData.email}
                           onChange={handleChange}
+                          onBlur={handleBlur}
                           required
-                          className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) placeholder:text-(--muted) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none"
+                          className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) placeholder:text-(--muted) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none transition-all"
                         />
+                        <ValidationIcon value={formData.email} isRequired={true} type="email" touched={touched.email} />
                       </div>
-                    ))}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-(--muted) mb-2">Phone Number *</label>
+                      <div className="input-wrapper">
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          required
+                          className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) placeholder:text-(--muted) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none transition-all"
+                        />
+                        <ValidationIcon value={formData.phone} isRequired={true} type="phone" touched={touched.phone} />
+                      </div>
+                    </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold text-(--muted) mb-2">Company Name (optional)</label>
-                    <input
-                      type="text"
-                      name="company"
-                      value={formData.company}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) placeholder:text-(--muted) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none"
-                    />
+                    <div className="input-wrapper">
+                      <input
+                        type="text"
+                        name="company"
+                        value={formData.company}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) placeholder:text-(--muted) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none transition-all"
+                      />
+                      <ValidationIcon value={formData.company} isRequired={false} touched={touched.company} />
+                    </div>
                   </div>
                 </div>
 
@@ -257,76 +315,96 @@ Preferred Contact Method: ${formData.preferredContact}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-(--muted) mb-2">Service Type *</label>
-                      <select
-                        name="serviceType"
-                        value={formData.serviceType}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none"
-                      >
+                      <div className="input-wrapper">
+                        <select
+                          name="serviceType"
+                          value={formData.serviceType}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          required
+                          className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none transition-all"
+                        >
                         <option value="">Select Service</option>
                         <option value="port-container">Port Container Service</option>
                         <option value="pickup-delivery">Pickup & Delivery</option>
                         <option value="warehouse">Warehouse to Warehouse</option>
                         <option value="custom">Custom Route</option>
                       </select>
+                      <ValidationIcon value={formData.serviceType} isRequired={true} touched={touched.serviceType} />
+                      </div>
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-(--muted) mb-2">Cargo Type *</label>
-                      <select
-                        name="cargoType"
-                        value={formData.cargoType}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none"
-                      >
-                        <option value="">Select Cargo Type</option>
-                        <option value="container-20">20' Container</option>
-                        <option value="container-40">40' Container</option>
-                        <option value="container-40hc">40' High Cube</option>
-                        <option value="dry-van">Dry Van</option>
-                        <option value="tank">Tank</option>
-                        <option value="other">Other</option>
-                      </select>
+                      <div className="input-wrapper">
+                        <select
+                          name="cargoType"
+                          value={formData.cargoType}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          required
+                          className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none transition-all"
+                        >
+                          <option value="">Select Cargo Type</option>
+                          <option value="container-20">20' Container</option>
+                          <option value="container-40">40' Container</option>
+                          <option value="container-40hc">40' High Cube</option>
+                          <option value="dry-van">Dry Van</option>
+                          <option value="tank">Tank</option>
+                          <option value="other">Other</option>
+                        </select>
+                        <ValidationIcon value={formData.cargoType} isRequired={true} touched={touched.cargoType} />
+                      </div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-(--muted) mb-2">Pickup Location *</label>
-                      <input
-                        type="text"
-                        name="pickupLocation"
-                        value={formData.pickupLocation}
-                        onChange={handleChange}
-                        placeholder="City, State or Port Name"
-                        required
-                        className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) placeholder:text-(--muted) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none"
-                      />
+                      <div className="input-wrapper">
+                        <input
+                          type="text"
+                          name="pickupLocation"
+                          value={formData.pickupLocation}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          placeholder="City, State or Port Name"
+                          required
+                          className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) placeholder:text-(--muted) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none transition-all"
+                        />
+                        <ValidationIcon value={formData.pickupLocation} isRequired={true} touched={touched.pickupLocation} />
+                      </div>
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-(--muted) mb-2">Delivery Location *</label>
-                      <input
-                        type="text"
-                        name="deliveryLocation"
-                        value={formData.deliveryLocation}
-                        onChange={handleChange}
-                        placeholder="City, State"
-                        required
-                        className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) placeholder:text-(--muted) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none"
-                      />
+                      <div className="input-wrapper">
+                        <input
+                          type="text"
+                          name="deliveryLocation"
+                          value={formData.deliveryLocation}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          placeholder="City, State"
+                          required
+                          className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) placeholder:text-(--muted) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none transition-all"
+                        />
+                        <ValidationIcon value={formData.deliveryLocation} isRequired={true} touched={touched.deliveryLocation} />
+                      </div>
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold text-(--muted) mb-2">Preferred Shipment Date</label>
-                    <input
-                      type="date"
-                      name="shipmentDate"
-                      value={formData.shipmentDate}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none"
-                    />
+                    <div className="input-wrapper">
+                      <input
+                        type="date"
+                        name="shipmentDate"
+                        value={formData.shipmentDate}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none transition-all"
+                      />
+                      <ValidationIcon value={formData.shipmentDate} isRequired={false} touched={touched.shipmentDate} />
+                    </div>
                   </div>
                 </div>
 
@@ -337,14 +415,18 @@ Preferred Contact Method: ${formData.preferredContact}
                   </h3>
                   <div>
                     <label className="block text-sm font-semibold text-(--muted) mb-2">Additional Details</label>
-                    <textarea
-                      name="additionalDetails"
-                      value={formData.additionalDetails}
-                      onChange={handleChange}
-                      rows={5}
-                      placeholder="Special requirements, timing notes, or questions..."
-                      className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) placeholder:text-(--muted) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none resize-none"
-                    />
+                    <div className="input-wrapper">
+                      <textarea
+                        name="additionalDetails"
+                        value={formData.additionalDetails}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        rows={5}
+                        placeholder="Special requirements, timing notes, or questions..."
+                        className="w-full px-4 py-3 rounded-lg bg-(--card) border border-(--line) text-(--strong) placeholder:text-(--muted) focus:ring-2 focus:ring-(--accent) focus:border-transparent outline-none resize-none transition-all"
+                      />
+                      <ValidationIcon value={formData.additionalDetails} isRequired={false} touched={touched.additionalDetails} />
+                    </div>
                   </div>
 
                   <div>

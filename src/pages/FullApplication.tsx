@@ -5,7 +5,9 @@ import {
   faIdCard,
   faCheckCircle,
   faArrowLeft,
-  faArrowRight
+  faArrowRight,
+  faCheck,
+  faXmark
 } from '@fortawesome/free-solid-svg-icons';
 import emailjs from '@emailjs/browser';
 import { EMAILJS_CONFIG } from '../config/emailjs';
@@ -40,6 +42,54 @@ interface ApplicationData {
   veteranStatus: string;
 }
 
+// Validation helper - returns status and icon info
+const getValidationStatus = (value: string, isRequired: boolean, type?: string, compareValue?: string): { status: string; isValid: boolean } | null => {
+  if (!value) {
+    return isRequired ? null : null;
+  }
+  
+  if (type === 'email') {
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    return { status: emailValid ? 'valid' : 'invalid', isValid: emailValid };
+  }
+  
+  if (type === 'phone') {
+    const phoneValid = value.replace(/\D/g, '').length >= 10;
+    return { status: phoneValid ? 'valid' : 'invalid', isValid: phoneValid };
+  }
+  
+  if (type === 'ssn') {
+    const ssnValid = /^\d{3}-\d{2}-\d{4}$/.test(value);
+    return { status: ssnValid ? 'valid' : 'invalid', isValid: ssnValid };
+  }
+  
+  if (type === 'confirmEmail' && compareValue) {
+    const isMatch = value === compareValue && value.length > 0;
+    return { status: isMatch ? 'valid' : 'invalid', isValid: isMatch };
+  }
+  
+  if (isRequired) {
+    const hasValue = value.trim().length > 0;
+    return { status: hasValue ? 'valid' : 'invalid', isValid: hasValue };
+  }
+  
+  return value.trim().length > 0 ? { status: 'optional-filled', isValid: true } : null;
+};
+
+// Validation Icon component
+const ValidationIcon = ({ value, isRequired, type, touched, compareValue }: { value: string; isRequired: boolean; type?: string; touched: boolean; compareValue?: string }) => {
+  if (!touched) return null;
+  
+  const validation = getValidationStatus(value, isRequired, type, compareValue);
+  if (!validation) return null;
+  
+  return (
+    <span className={`validation-icon ${validation.status}`}>
+      <FontAwesomeIcon icon={validation.isValid ? faCheck : faXmark} />
+    </span>
+  );
+};
+
 export default function FullApplication() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<ApplicationData>({
@@ -69,14 +119,13 @@ export default function FullApplication() {
     veteranStatus: ''
   });
 
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const formatSSN = (value: string) => {
-    // Remove all non-digits
     const digits = value.replace(/\D/g, '');
     
-    // Format as XXX-XX-XXXX
     if (digits.length <= 3) {
       return digits;
     } else if (digits.length <= 5) {
@@ -90,7 +139,6 @@ export default function FullApplication() {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
     
-    // Auto-format SSN as user types
     if (name === 'ssn') {
       const formattedSSN = formatSSN(value);
       setFormData({
@@ -103,6 +151,13 @@ export default function FullApplication() {
         [name]: type === 'checkbox' ? checked : value
       });
     }
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setTouched({
+      ...touched,
+      [e.target.name]: true
+    });
   };
 
   const handleNext = (e?: React.FormEvent) => {
@@ -138,38 +193,8 @@ export default function FullApplication() {
     setIsSubmitting(true);
     
     try {
-      const detailedMessage = `
-FULL DRIVER APPLICATION
-
-PERSONAL INFORMATION:
-Name: ${formData.firstName} ${formData.middleName} ${formData.lastName} ${formData.suffix}
-SSN: ${formData.ssn}
-Date of Birth: ${formData.dateOfBirth}
-
-ADDRESS:
-${formData.streetAddress1}
-${formData.streetAddress2 ? formData.streetAddress2 + '\n' : ''}${formData.city}, ${formData.state} ${formData.zipCode}
-Residence 3+ years: ${formData.residenceYears}
-
-CONTACT:
-Primary Phone: ${formData.primaryPhone}
-Cell Phone: ${formData.cellPhone}
-Email: ${formData.email}
-Preferred Contact: ${formData.preferredContact}
-Best Time: ${formData.bestTimeToContact}
-
-EXPERIENCE:
-Driving Experience: ${formData.drivingExperience}
-
-CONSENT:
-Phone Consent: ${formData.phoneConsent ? 'Yes' : 'No'}
-Email Consent: ${formData.emailConsent ? 'Yes' : 'No'}
-
-EEO INFORMATION:
-Gender: ${formData.gender || 'Not specified'}
-Race/Ethnicity: ${formData.raceEthnicity || 'Not specified'}
-Veteran Status: ${formData.veteranStatus || 'Not specified'}
-      `.trim();
+      // Build HTML without line breaks to prevent email clients from adding extra spacing
+      const detailedMessage = `<table style="width:100%;border-collapse:collapse;font-size:13px;font-family:'Segoe UI',Tahoma,sans-serif;"><tr><td colspan="2" style="background:#1e40af;color:white;padding:6px 10px;font-weight:700;font-size:11px;">👤 PERSONAL INFORMATION</td></tr><tr><td style="padding:4px 8px;color:#64748b;width:110px;background:#fff;border:1px solid #e2e8f0;"><strong>Name:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.firstName} ${formData.middleName} ${formData.lastName} ${formData.suffix}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>SSN:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.ssn}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Date of Birth:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.dateOfBirth}</td></tr><tr><td colspan="2" style="background:#1e40af;color:white;padding:6px 10px;font-weight:700;font-size:11px;">📍 ADDRESS</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Street:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.streetAddress1}${formData.streetAddress2 ? ', ' + formData.streetAddress2 : ''}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>City/State/Zip:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.city}, ${formData.state} ${formData.zipCode}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>3+ Years:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.residenceYears === 'yes' ? 'Yes' : 'No'}</td></tr><tr><td colspan="2" style="background:#1e40af;color:white;padding:6px 10px;font-weight:700;font-size:11px;">📞 CONTACT</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Primary Phone:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.primaryPhone}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Cell Phone:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.cellPhone || 'N/A'}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Email:</strong></td><td style="padding:4px 8px;color:#2563eb;background:#fff;border:1px solid #e2e8f0;">${formData.email}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Preferred:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.preferredContact}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Best Time:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.bestTimeToContact}</td></tr><tr><td colspan="2" style="background:#1e40af;color:white;padding:6px 10px;font-weight:700;font-size:11px;">🚛 EXPERIENCE</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Driving Exp:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.drivingExperience}</td></tr><tr><td colspan="2" style="background:#1e40af;color:white;padding:6px 10px;font-weight:700;font-size:11px;">✅ CONSENT</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Phone Consent:</strong></td><td style="padding:4px 8px;color:${formData.phoneConsent ? '#16a34a' : '#dc2626'};font-weight:600;background:#fff;border:1px solid #e2e8f0;">${formData.phoneConsent ? '✓ Yes' : '✗ No'}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Email Consent:</strong></td><td style="padding:4px 8px;color:${formData.emailConsent ? '#16a34a' : '#dc2626'};font-weight:600;background:#fff;border:1px solid #e2e8f0;">${formData.emailConsent ? '✓ Yes' : '✗ No'}</td></tr><tr><td colspan="2" style="background:#1e40af;color:white;padding:6px 10px;font-weight:700;font-size:11px;">📊 EEO INFORMATION</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Gender:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.gender || 'Not specified'}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Race/Ethnicity:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.raceEthnicity || 'Not specified'}</td></tr><tr><td style="padding:4px 8px;color:#64748b;background:#fff;border:1px solid #e2e8f0;"><strong>Veteran Status:</strong></td><td style="padding:4px 8px;color:#0f172a;background:#fff;border:1px solid #e2e8f0;">${formData.veteranStatus || 'Not specified'}</td></tr></table>`;
 
       await emailjs.send(
         EMAILJS_CONFIG.SERVICE_ID,
@@ -276,39 +301,51 @@ Veteran Status: ${formData.veteranStatus || 'Not specified'}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-semibold text-[var(--muted)] mb-2">First Name *</label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                    />
+                    <div className="input-wrapper">
+                      <input
+                        type="text"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        required
+                        className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                      />
+                      <ValidationIcon value={formData.firstName} isRequired={true} touched={touched.firstName} />
+                    </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Middle Name</label>
-                    <input
-                      type="text"
-                      name="middleName"
-                      value={formData.middleName}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                    />
+                    <div className="input-wrapper">
+                      <input
+                        type="text"
+                        name="middleName"
+                        value={formData.middleName}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                      />
+                      <ValidationIcon value={formData.middleName} isRequired={false} touched={touched.middleName} />
+                    </div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="md:col-span-2">
                     <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Last Name *</label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                    />
+                    <div className="input-wrapper">
+                      <input
+                        type="text"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        required
+                        className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                      />
+                      <ValidationIcon value={formData.lastName} isRequired={true} touched={touched.lastName} />
+                    </div>
                   </div>
 
                   <div>
@@ -317,7 +354,8 @@ Veteran Status: ${formData.veteranStatus || 'Not specified'}
                       name="suffix"
                       value={formData.suffix}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
+                      onBlur={handleBlur}
+                      className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
                     >
                       <option value=""></option>
                       <option value="Jr">Jr</option>
@@ -332,29 +370,37 @@ Veteran Status: ${formData.veteranStatus || 'Not specified'}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-semibold text-[var(--muted)] mb-2">SSN / SIN *</label>
-                    <input
-                      type="text"
-                      name="ssn"
-                      value={formData.ssn}
-                      onChange={handleChange}
-                      placeholder="XXX-XX-XXXX"
-                      required
-                      maxLength={11}
-                      pattern="\d{3}-\d{2}-\d{4}"
-                      className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                    />
+                    <div className="input-wrapper">
+                      <input
+                        type="text"
+                        name="ssn"
+                        value={formData.ssn}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        placeholder="XXX-XX-XXXX"
+                        required
+                        maxLength={11}
+                        pattern="\d{3}-\d{2}-\d{4}"
+                        className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                      />
+                      <ValidationIcon value={formData.ssn} isRequired={true} type="ssn" touched={touched.ssn} />
+                    </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Date of Birth (mm/dd/yyyy) *</label>
-                    <input
-                      type="date"
-                      name="dateOfBirth"
-                      value={formData.dateOfBirth}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                    />
+                    <div className="input-wrapper">
+                      <input
+                        type="date"
+                        name="dateOfBirth"
+                        value={formData.dateOfBirth}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        required
+                        className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                      />
+                      <ValidationIcon value={formData.dateOfBirth} isRequired={true} touched={touched.dateOfBirth} />
+                    </div>
                   </div>
                 </div>
 
@@ -364,70 +410,90 @@ Veteran Status: ${formData.veteranStatus || 'Not specified'}
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Current Street Address (line 1) *</label>
-                      <input
-                        type="text"
-                        name="streetAddress1"
-                        value={formData.streetAddress1}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                      />
+                      <div className="input-wrapper">
+                        <input
+                          type="text"
+                          name="streetAddress1"
+                          value={formData.streetAddress1}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          required
+                          className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                        />
+                        <ValidationIcon value={formData.streetAddress1} isRequired={true} touched={touched.streetAddress1} />
+                      </div>
                     </div>
 
                     <div>
                       <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Current Street Address (line 2)</label>
-                      <input
-                        type="text"
-                        name="streetAddress2"
-                        value={formData.streetAddress2}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                      />
+                      <div className="input-wrapper">
+                        <input
+                          type="text"
+                          name="streetAddress2"
+                          value={formData.streetAddress2}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                        />
+                        <ValidationIcon value={formData.streetAddress2} isRequired={false} touched={touched.streetAddress2} />
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
                         <label className="block text-sm font-semibold text-[var(--muted)] mb-2">City *</label>
-                        <input
-                          type="text"
-                          name="city"
-                          value={formData.city}
-                          onChange={handleChange}
-                          required
-                          className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                        />
+                        <div className="input-wrapper">
+                          <input
+                            type="text"
+                            name="city"
+                            value={formData.city}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            required
+                            className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                          />
+                          <ValidationIcon value={formData.city} isRequired={true} touched={touched.city} />
+                        </div>
                       </div>
 
                       <div>
                         <label className="block text-sm font-semibold text-[var(--muted)] mb-2">State/Province *</label>
-                        <select
-                          name="state"
-                          value={formData.state}
-                          onChange={handleChange}
-                          required
-                          className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                        >
-                          <option value="">Please Choose</option>
-                          <option value="GA">Georgia</option>
-                          <option value="AL">Alabama</option>
-                          <option value="SC">South Carolina</option>
-                          <option value="FL">Florida</option>
-                          <option value="TN">Tennessee</option>
-                          <option value="LA">Louisiana</option>
-                          <option value="TX">Texas</option>
-                        </select>
+                        <div className="input-wrapper">
+                          <select
+                            name="state"
+                            value={formData.state}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            required
+                            className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                          >
+                            <option value="">Please Choose</option>
+                            <option value="GA">Georgia</option>
+                            <option value="AL">Alabama</option>
+                            <option value="SC">South Carolina</option>
+                            <option value="FL">Florida</option>
+                            <option value="TN">Tennessee</option>
+                            <option value="LA">Louisiana</option>
+                            <option value="TX">Texas</option>
+                          </select>
+                          <ValidationIcon value={formData.state} isRequired={true} touched={touched.state} />
+                        </div>
                       </div>
 
                       <div>
                         <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Zip/Postal Code *</label>
-                        <input
-                          type="text"
-                          name="zipCode"
-                          value={formData.zipCode}
-                          onChange={handleChange}
-                          required
-                          className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                        />
+                        <div className="input-wrapper">
+                          <input
+                            type="text"
+                            name="zipCode"
+                            value={formData.zipCode}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            required
+                            className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                          />
+                          <ValidationIcon value={formData.zipCode} isRequired={true} touched={touched.zipCode} />
+                        </div>
                       </div>
                     </div>
 
@@ -468,50 +534,66 @@ Veteran Status: ${formData.veteranStatus || 'Not specified'}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Primary Phone *</label>
-                        <input
-                          type="tel"
-                          name="primaryPhone"
-                          value={formData.primaryPhone}
-                          onChange={handleChange}
-                          required
-                          className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                        />
+                        <div className="input-wrapper">
+                          <input
+                            type="tel"
+                            name="primaryPhone"
+                            value={formData.primaryPhone}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            required
+                            className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                          />
+                          <ValidationIcon value={formData.primaryPhone} isRequired={true} type="phone" touched={touched.primaryPhone} />
+                        </div>
                         <p className="text-xs text-[var(--muted)] mt-1">If your cell phone is also your primary phone, enter it in both fields below</p>
                       </div>
 
                       <div>
                         <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Cell Phone</label>
-                        <input
-                          type="tel"
-                          name="cellPhone"
-                          value={formData.cellPhone}
-                          onChange={handleChange}
-                          className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                        />
+                        <div className="input-wrapper">
+                          <input
+                            type="tel"
+                            name="cellPhone"
+                            value={formData.cellPhone}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                          />
+                          <ValidationIcon value={formData.cellPhone} isRequired={false} type="phone" touched={touched.cellPhone} />
+                        </div>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Email Address</label>
-                        <input
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleChange}
-                          className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                        />
+                        <div className="input-wrapper">
+                          <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                          />
+                          <ValidationIcon value={formData.email} isRequired={false} type="email" touched={touched.email} />
+                        </div>
                       </div>
 
                       <div>
                         <label className="block text-sm font-semibold text-[var(--muted)] mb-2">Confirm Email Address</label>
-                        <input
-                          type="email"
-                          name="confirmEmail"
-                          value={formData.confirmEmail}
-                          onChange={handleChange}
-                          className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                        />
+                        <div className="input-wrapper">
+                          <input
+                            type="email"
+                            name="confirmEmail"
+                            value={formData.confirmEmail}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                          />
+                          <ValidationIcon value={formData.confirmEmail} isRequired={false} type="confirmEmail" touched={touched.confirmEmail} compareValue={formData.email} />
+                        </div>
                       </div>
                     </div>
 
@@ -522,7 +604,7 @@ Veteran Status: ${formData.veteranStatus || 'Not specified'}
                           name="preferredContact"
                           value={formData.preferredContact}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
+                          className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
                         >
                           <option value="phone">Primary Phone</option>
                           <option value="cell">Cell Phone</option>
@@ -536,7 +618,7 @@ Veteran Status: ${formData.veteranStatus || 'Not specified'}
                           name="bestTimeToContact"
                           value={formData.bestTimeToContact}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
+                          className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
                         >
                           <option value="any">Any</option>
                           <option value="morning">Morning</option>
@@ -584,21 +666,25 @@ Veteran Status: ${formData.veteranStatus || 'Not specified'}
 
                     <div>
                       <label className="block text-sm font-semibold text-[var(--muted)] mb-2">What is your Class A Driving Experience Level? *</label>
-                      <select
-                        name="drivingExperience"
-                        value={formData.drivingExperience}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                      >
-                        <option value=""></option>
-                        <option value="no-experience">No Experience / Student</option>
-                        <option value="0-6months">0-6 Months</option>
-                        <option value="6-12months">6-12 Months</option>
-                        <option value="1-2years">1-2 Years</option>
-                        <option value="2-5years">2-5 Years</option>
-                        <option value="5+years">5+ Years</option>
-                      </select>
+                      <div className="input-wrapper">
+                        <select
+                          name="drivingExperience"
+                          value={formData.drivingExperience}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          required
+                          className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                        >
+                          <option value=""></option>
+                          <option value="no-experience">No Experience / Student</option>
+                          <option value="0-6months">0-6 Months</option>
+                          <option value="6-12months">6-12 Months</option>
+                          <option value="1-2years">1-2 Years</option>
+                          <option value="2-5years">2-5 Years</option>
+                          <option value="5+years">5+ Years</option>
+                        </select>
+                        <ValidationIcon value={formData.drivingExperience} isRequired={true} touched={touched.drivingExperience} />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -625,17 +711,21 @@ Veteran Status: ${formData.veteranStatus || 'Not specified'}
 
                 <div>
                   <label className="block text-sm font-semibold text-[var(--muted)] mb-2">GENDER</label>
-                  <select
-                    name="gender"
-                    value={formData.gender}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                  >
-                    <option value="">Select</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="prefer-not">I Prefer Not to Answer</option>
-                  </select>
+                  <div className="input-wrapper">
+                    <select
+                      name="gender"
+                      value={formData.gender}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                    >
+                      <option value="">Select</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="prefer-not">I Prefer Not to Answer</option>
+                    </select>
+                    <ValidationIcon value={formData.gender} isRequired={false} touched={touched.gender} />
+                  </div>
                 </div>
 
                 <div>
@@ -652,37 +742,45 @@ Veteran Status: ${formData.veteranStatus || 'Not specified'}
                     <p><strong>I Prefer Not to Answer</strong></p>
                   </div>
 
-                  <select
-                    name="raceEthnicity"
-                    value={formData.raceEthnicity}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                  >
-                    <option value="">Please select a race/ethnic category</option>
-                    <option value="american-indian">American Indian or Alaska Native</option>
-                    <option value="asian">Asian</option>
-                    <option value="black">Black or African American</option>
-                    <option value="hispanic">Hispanic or Latino</option>
-                    <option value="pacific-islander">Native Hawaiian or Other Pacific Islander</option>
-                    <option value="white">White</option>
-                    <option value="two-or-more">Two or More Races</option>
-                    <option value="prefer-not">I Prefer Not to Answer</option>
-                  </select>
+                  <div className="input-wrapper">
+                    <select
+                      name="raceEthnicity"
+                      value={formData.raceEthnicity}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                    >
+                      <option value="">Please select a race/ethnic category</option>
+                      <option value="american-indian">American Indian or Alaska Native</option>
+                      <option value="asian">Asian</option>
+                      <option value="black">Black or African American</option>
+                      <option value="hispanic">Hispanic or Latino</option>
+                      <option value="pacific-islander">Native Hawaiian or Other Pacific Islander</option>
+                      <option value="white">White</option>
+                      <option value="two-or-more">Two or More Races</option>
+                      <option value="prefer-not">I Prefer Not to Answer</option>
+                    </select>
+                    <ValidationIcon value={formData.raceEthnicity} isRequired={false} touched={touched.raceEthnicity} />
+                  </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-[var(--muted)] mb-2">VETERAN STATUS</label>
-                  <select
-                    name="veteranStatus"
-                    value={formData.veteranStatus}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none"
-                  >
-                    <option value="">Select</option>
-                    <option value="veteran">Veteran</option>
-                    <option value="not-veteran">Not a Veteran</option>
-                    <option value="prefer-not">I Prefer Not to Answer</option>
-                  </select>
+                  <div className="input-wrapper">
+                    <select
+                      name="veteranStatus"
+                      value={formData.veteranStatus}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className="w-full px-4 py-3 border border-[var(--line)] rounded-lg focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition-all"
+                    >
+                      <option value="">Select</option>
+                      <option value="veteran">Veteran</option>
+                      <option value="not-veteran">Not a Veteran</option>
+                      <option value="prefer-not">I Prefer Not to Answer</option>
+                    </select>
+                    <ValidationIcon value={formData.veteranStatus} isRequired={false} touched={touched.veteranStatus} />
+                  </div>
                 </div>
               </div>
             )}

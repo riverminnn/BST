@@ -488,3 +488,36 @@ body {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-4px); }
 }
+
+/* ========================================
+   FORM VALIDATION ICON INDICATOR
+   ======================================== */
+.input-validated {
+    position: relative;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper .validation-icon {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.validation-icon.valid {
+    color: #22c55e;
+}
+
+.validation-icon.invalid {
+    color: #ef4444;
+}
+
+.validation-icon.optional-filled {
+    color: #3b82f6;
+}
