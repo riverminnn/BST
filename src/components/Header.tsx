@@ -40,9 +40,13 @@ export default function Header() {
       <div className="page-shell">
         <div className={`hidden md:flex items-center justify-between py-3 text-xs ${theme === 'dark' ? 'text-(--muted)' : 'text-white/80'}`}>
           <div className="flex items-center gap-3">
-            <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full font-semibold text-xs ${
-              theme === 'dark' ? 'pill' : 'bg-white/15 text-white'
-            }`}>
+            <span
+              className={`inline-flex items-center gap-2 px-3 h-8 rounded-full font-semibold text-[11px] leading-[1.1] whitespace-nowrap ${
+                theme === 'dark'
+                  ? 'bg-(--pill) text-(--accent-strong) border border-(--line)'
+                  : 'bg-white/15 text-white'
+              }`}
+            >
               <FontAwesomeIcon icon={faTruck} />
               On the road 24/7
             </span>

@@ -86,10 +86,12 @@ export default function Home() {
 
             <div className="surface-card p-5 flex flex-col gap-3 border border-(--line)">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-full bg-(--pill) text-(--accent-strong) flex items-center justify-center text-xl font-bold">24/7</div>
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-(--accent) to-(--accent-strong) border border-(--line) shadow-md text-(--btn-text) flex items-center justify-center text-[11px] font-extrabold tracking-tight">
+                  24/7
+                </div>
                 <div>
-                  <p className="text-sm text-(--muted)">Call dispatch</p>
-                  <p className="font-semibold">(770) 668-3771</p>
+                  <p className="text-xs uppercase tracking-[0.12em] text-(--muted)">Call dispatch</p>
+                  <p className="font-semibold text-(--strong)">(770) 668-3771</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
