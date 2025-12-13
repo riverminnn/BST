@@ -43,7 +43,7 @@ export default function Header() {
             <span
               className={`inline-flex items-center gap-2 px-3 h-8 rounded-full font-semibold text-[11px] leading-[1.1] whitespace-nowrap ${
                 theme === 'dark'
-                  ? 'bg-(--pill) text-(--accent-strong) border border-(--line)'
+                  ? 'bg-(--pill) text-(--accent-strong)'
                   : 'bg-white/15 text-white'
               }`}
             >
